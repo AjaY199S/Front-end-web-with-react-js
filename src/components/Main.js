@@ -14,9 +14,11 @@ import DishDetail from "./Dishdetail";
 
 import {
   postComment,
+  postFeedback,
   fetchDishes,
   fetchComments,
   fetchPromos,
+  fetchleaders,
 } from "../redux/ActionCreator";
 
 const mapDispatchToProps = (dispatch) => ({
@@ -26,6 +28,9 @@ const mapDispatchToProps = (dispatch) => ({
   fetchDishes: () => {
     dispatch(fetchDishes());
   },
+  postFeedback: (values) => {
+    dispatch(postFeedback(values));
+  },
   resetFeedbackForm: () => {
     dispatch(actions.reset("feedback"));
   },
@@ -34,6 +39,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   fetchPromos: () => {
     dispatch(fetchPromos());
+  },
+  fetchleaders: () => {
+    dispatch(fetchleaders());
   },
 });
 
@@ -51,6 +59,7 @@ class Main extends Component {
     this.props.fetchDishes();
     this.props.fetchComments();
     this.props.fetchPromos();
+    this.props.fetchleaders();
   }
 
   render() {
@@ -67,7 +76,11 @@ class Main extends Component {
           }
           promoLoading={this.props.promotions.isLoading}
           promoErrMess={this.props.promotions.errMess}
-          leader={this.props.leaders.filter((leader) => leader.featured)[0]}
+          leader={
+            this.props.leaders.leaders.filter((leader) => leader.featured)[0]
+          }
+          leaderLoading={this.props.leaders.isLoading}
+          leaderErrMess={this.props.leaders.errMess}
         ></Home>
       );
     };
@@ -119,7 +132,10 @@ class Main extends Component {
                   exact
                   path="/contactus"
                   component={() => (
-                    <Contact resetFeedbackForm={this.props.resetFeedbackForm} />
+                    <Contact
+                      postFeedback={this.props.postFeedback}
+                      resetFeedbackForm={this.props.resetFeedbackForm}
+                    />
                   )}
                 />
                 <Redirect to="/home" />

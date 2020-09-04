@@ -8,8 +8,12 @@ import {
   Media,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { Stagger } from "react-animation-components";
 
-function RenderLeader({ leaders }) {
+import { Loading } from "./Loading";
+import { baseUrl } from "../shared/config";
+
+function RenderLeader({ leaders, isLoading, errMess }) {
   const leadersDetails = leaders.map((leader) => {
     return (
       <Media key={leader.id} className="mb-3 mt-2">
@@ -17,7 +21,7 @@ function RenderLeader({ leaders }) {
           <Media
             left
             top
-            src={leader.image}
+            src={baseUrl + leader.image}
             alt={leader.name}
             className="mr-5"
           />
@@ -32,10 +36,38 @@ function RenderLeader({ leaders }) {
       </Media>
     );
   });
-  return <div>{leadersDetails}</div>;
+  if (isLoading) {
+    return (
+      <div className="container">
+        <div className="row">
+          <Loading />
+        </div>
+      </div>
+    );
+  } else if (errMess) {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-12">
+            <h4>{errMess}</h4>
+          </div>
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <Stagger delay={1000} in>
+          {leadersDetails}
+        </Stagger>
+      </div>
+    );
+  }
 }
 
 function About(props) {
+  console.log("About : ", props);
+
   return (
     <div className="container">
       <div className="row">
@@ -112,7 +144,11 @@ function About(props) {
           <h2>Corporate Leadership</h2>
         </div>
         <div className="col-12">
-          <RenderLeader leaders={props.leaders} />
+          <RenderLeader
+            leaders={props.leaders.leaders}
+            isLoading={props.leaders.isLoading}
+            errMess={props.leaders.errMess}
+          />
         </div>
       </div>
     </div>
