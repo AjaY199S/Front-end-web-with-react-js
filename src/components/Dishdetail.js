@@ -17,6 +17,8 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { Control, LocalForm, Errors } from "react-redux-form";
+import { FadeTransform, Fade, Stagger } from "react-animation-components";
+
 import { Loading } from "./Loading";
 import { baseUrl } from "../shared/config";
 
@@ -133,37 +135,44 @@ class DishDetail extends React.Component {
 
     const RenderDish = ({ dish }) => {
       return (
-        <Card>
-          <CardImg top src={baseUrl + dish.image} alt={dish.name} />
-          <CardBody>
-            <CardTitle>{dish.name}</CardTitle>
-            <CardText>{dish.description}</CardText>
-          </CardBody>
-        </Card>
+        <FadeTransform
+          in
+          transformProps={{
+            exitTransform: "scale(0.5) translateY(-50%)",
+          }}
+        >
+          <Card>
+            <CardImg top src={baseUrl + dish.image} alt={dish.name} />
+            <CardBody>
+              <CardTitle>{dish.name}</CardTitle>
+              <CardText>{dish.description}</CardText>
+            </CardBody>
+          </Card>
+        </FadeTransform>
       );
     };
 
     const RenderComments = ({ comments, dishId }) => {
-      const dishComment = comments.map((c) => {
+      const dishComment = comments.map((comment) => {
         return (
-          <div key={c.id} className="col-12 m-1">
-            <ul className="list-unstyled">
-              <li>{c.comment}</li>
-              <li>
-                -- {c.author} ,
+          <Fade in>
+            <li key={comment.id}>
+              <p>{comment.comment}</p>
+              <p>
+                -- {comment.author} ,
                 {new Intl.DateTimeFormat("en-US", {
                   year: "numeric",
                   month: "short",
                   day: "2-digit",
-                }).format(new Date(Date.parse(c.date)))}
-              </li>
-            </ul>
-          </div>
+                }).format(new Date(Date.parse(comment.date)))}
+              </p>
+            </li>
+          </Fade>
         );
       });
       return (
         <div>
-          {dishComment}
+          <Stagger in>{dishComment}</Stagger>
           <Button outline onClick={this.toggleModal}>
             <span className="fa fa-pencil fa-lg"></span> Submit Comment
           </Button>
